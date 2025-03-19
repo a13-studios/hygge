@@ -2,8 +2,7 @@ use std::path::Path;
 use std::process;
 
 use clap::{Parser, Subcommand};
-use dialoguer::{Input, Select, Confirm};
-use indicatif::{ProgressBar, ProgressStyle};
+use dialoguer::{Select};
 
 mod hygge;
 
