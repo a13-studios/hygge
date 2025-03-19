@@ -1,6 +1,9 @@
 use std::path::Path;
 use std::process;
+
 use clap::{Parser, Subcommand};
+use dialoguer::{Input, Select, Confirm};
+use indicatif::{ProgressBar, ProgressStyle};
 
 mod hygge;
 
@@ -21,6 +24,15 @@ enum Commands {
     Exit
 }
 
+fn draw_card(deck : &mut hygge::HyggeDeck) {
+    if let Some(card) = deck.draw() {
+        println!("\n");
+        println!("{}", card.text);
+        println!("\n");
+    } else {
+        println!("The deck is empty!");
+    }
+}
 
 fn main()
 {
@@ -36,18 +48,27 @@ fn main()
 
     deck.shuffle();
 
-    let cli = Cli::parse();
+    loop
+    {
+        let selection = Select::new()
+            .with_prompt("What would you like to do?")
+            .default(0)
+            .item("Draw a card")
+            .item("Exit")
+            .report(false) // 👈 Hides the selected option
+            .interact()
+            .unwrap();
 
-    match cli.command {
-        Commands::Draw => {
-            if let Some(card) = deck.draw() {
-                println!("You drew: {}", card.text);
-            } else {
-                println!("The deck is empty!");
+        match selection {
+            0 => draw_card(&mut deck),
+            1 => {
+                process::exit(1);
+            }
+            _ => {
+                println!("Invalid selection!");
             }
         }
-        Commands::Exit => {
-            process::exit(1);
-        }
     }
+
+
 }
