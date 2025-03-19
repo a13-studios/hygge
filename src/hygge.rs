@@ -2,15 +2,17 @@ use std::fs::{read_to_string, File};
 use std::io::BufReader;
 use std::io::Write;
 
+
 use serde::{Deserialize, Serialize};
 use serde_json;
 use rand::Rng;
 use std::path::Path;
+use rand::seq::SliceRandom;
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct HyggeCard {
     id: u16,
-    text: String
+    pub text: String
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -47,6 +49,15 @@ impl HyggeDeck {
 
         println!("HyggeDeck successfully exported as an array of cards.");
         Ok(())
+    }
+
+    pub fn shuffle(&mut self) {
+        let mut rng = rand::thread_rng();
+        self.cards.shuffle(&mut rng);
+    }
+
+    pub fn draw(&mut self) -> Option<HyggeCard> {
+        self.cards.pop()
     }
 }
 
